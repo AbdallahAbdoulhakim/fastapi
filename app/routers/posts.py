@@ -82,15 +82,3 @@ db: Session = Depends(database.get_db)):
     
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-
-@root.get("/test/{id}", response_model=schemas.Post)
-def get_post(id:int, current_user: schemas.UserOut = Depends(oauth2.get_current_active_user), 
-db: Session = Depends(database.get_db)):
-
-    post = db.query(models.Posts, func.count(models.Votes.post_id).label("votes")).filter(models.Posts.id == id).join(models.Votes, models.Posts.id == models.Votes.post_id, isouter=True).group_by(models.Posts.id)
-
-    result=post.first()
-
- 
-    
-    return result
